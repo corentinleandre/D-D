@@ -8,7 +8,7 @@ import filesync.exceptions.WrongTypeException;
 
 public class SyncFolder {
 
-	private String name = "Nouveau Dossier";
+	private final String name;
 	private final String localpath;
 	
 	public SyncFolder(String path) throws FileSyncException, FileNotFoundException {
@@ -22,7 +22,16 @@ public class SyncFolder {
 		}
 		
 		this.localpath = file.getAbsolutePath();
-		this.name = path.split(File.separator)[path.split(File.separator).length-1];
+		this.name = this.localpath.split("\\" + File.separator)[this.localpath.split("\\" + File.separator).length-1];
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getLocalpath() {
+		return localpath;
+	}
+	
 	
 }
