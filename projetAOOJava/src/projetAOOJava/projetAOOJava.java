@@ -13,6 +13,9 @@ public class projetAOOJava {
 			SyncFolder sf = new SyncFolder("..\\king D-D-D");
 			System.out.println(sf.getLocalpath());
 			System.out.println(sf.getName());
+			for(String s : sf.getFiles()) {
+				System.out.println(s);
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());

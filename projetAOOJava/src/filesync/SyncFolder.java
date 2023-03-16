@@ -33,5 +33,10 @@ public class SyncFolder {
 		return localpath;
 	}
 	
+	public String[] getFiles() {
+		File sf = new File(this.localpath);
+		return sf.list();
+	}
+	
 	
 }
