@@ -10,9 +10,9 @@ public class projetAOOJava {
 
 	public static void main(String[] args) {
 		try {
-			SyncFolder sf = new SyncFolder("..\\king D-D-D");
-			System.out.println(sf.getLocalpath());
-			System.out.println(sf.getName());
+			SyncFolder sf = new SyncFolder("..\\D-D members");
+			System.out.println("File path : " + sf.getLocalpath());
+			System.out.println("File name : " + sf.getName());
 			for(String s : sf.getFiles()) {
 				System.out.println(s);
 			}
