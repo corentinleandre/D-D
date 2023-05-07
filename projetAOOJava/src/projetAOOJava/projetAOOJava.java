@@ -1,29 +1,45 @@
 package projetAOOJava;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import exceptions.FileSyncException;
 import filesync.SyncFolder;
-import utils.Copy;
-
 public class projetAOOJava {
 
 	public static void main(String[] args) {
 		try {
-			SyncFolder sf = new SyncFolder("..\\D-D members");
-			System.out.println("File path : " + sf.getLocalpath());
-			System.out.println("File name : " + sf.getName());
-			System.out.println(sf.getMode().toString());
-			for(String s : sf.getFiles()) {
+			
+			SyncFolder sf = new SyncFolder("..\\D-D Members");
+			System.out.println("Folder path : " + sf.getLocalpath());
+			System.out.println("Folder name : " + sf.getName());
+			for(String s : sf.getAllSignatures()) {
 				System.out.println(s);
 			}
-			SyncFolder sfp = new SyncFolder("..\\D-D' members");
-			System.out.println(sfp.getMode().toString());
 			
-			File f1 = new File("..\\D-D members\\D-D List");
-			File f2 = new File("..\\D-D' members\\D-D List");
-			new Copy(f1,f2);
+			SyncFolder sf2 = new SyncFolder("..\\AHA");
+			System.out.println("Folder path : " + sf2.getLocalpath());
+			System.out.println("Folder name : " + sf2.getName());
+			for(String s : sf2.getAllSignatures()) {
+				System.out.println(s);
+			}
+			
+			sf2.synchronizeTo(sf);
+			
+			SyncFolder.startSyncClock(30000);
+			//Thread to stop after 5min
+			new Thread() {
+				public void run() {
+					try {
+						sleep(600000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					SyncFolder.stopSyncClock();
+				}
+			}.start();
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
@@ -31,6 +47,9 @@ public class projetAOOJava {
 		} catch (FileSyncException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -2,8 +2,8 @@ package filesync;
 
 public enum SyncMode {
 	
-	SOURCE(),
-	RECEIVER(),
+	LOCAL(),
+	DISTANT(),
 	ERROR();
 	
 	
