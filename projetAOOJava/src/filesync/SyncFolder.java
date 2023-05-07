@@ -3,6 +3,8 @@ package filesync;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,25 +17,29 @@ import exceptions.TypeMismatchException;
 import exceptions.WrongTypeException;
 import utils.Copy;
 
-public class SyncFolder {
+public class SyncFolder extends UnicastRemoteObject implements RemoteSyncFolder {
 	
-	private static List<SyncFolder> localfolders = new ArrayList<SyncFolder>();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7615814265120177769L;
+	private static List<RemoteSyncFolder> localfolders = new ArrayList<RemoteSyncFolder>();
 	private static Thread syncClock = null;
 	private static boolean syncClockRunning = false;
 
 	private String name = "";
 	private String localpath = "";
 	private SyncMode mode;
-	private Set<SyncFolder> pairedFolders = new HashSet<SyncFolder>();
+	private Set<RemoteSyncFolder> pairedFolders = new HashSet<RemoteSyncFolder>();
 	
-	public SyncFolder(File file) {
+	public SyncFolder(File file) throws RemoteException{
 		this.localpath = file.getAbsolutePath();
 		this.name = file.getName();
 		
 		localfolders.add(this);
 	}
 	
-	public SyncFolder(String path) {
+	public SyncFolder(String path) throws RemoteException {
 		this(new File(path));
 	}
 
@@ -50,8 +56,8 @@ public class SyncFolder {
 		return sf.list();
 	}
 	
-	public List<SyncFile> getFiles() throws WrongTypeException, FileNotFoundException {
-		ArrayList<SyncFile> alsf = new ArrayList<SyncFile>();
+	public List<RemoteSyncFile> getFiles() throws WrongTypeException, FileNotFoundException, RemoteException {
+		ArrayList<RemoteSyncFile> alsf = new ArrayList<RemoteSyncFile>();
 		Map<String,File> toTreat = new HashMap<String,File>();
 		File sf = new File(this.localpath);
 		toTreat.put("", sf);
@@ -76,24 +82,24 @@ public class SyncFolder {
 		return alsf;
 	}
 	
-	public boolean pairWith(SyncFolder sf) {
+	public boolean pairWith(RemoteSyncFolder sf) throws RemoteException {
 		if(this.pairedFolders.add(sf)) {
 			sf.pairWith(this);
 		}
 		return true;
 	}
 	
-	public List<String> getAllSignatures() throws WrongTypeException, FileNotFoundException{
+	public List<String> getAllSignatures() throws WrongTypeException, FileNotFoundException, RemoteException{
 		ArrayList<String> toRet = new ArrayList<String>();
-		for(SyncFile sf : this.getFiles()) {
+		for(RemoteSyncFile sf : this.getFiles()) {
 			toRet.add(sf.getSignature());
 		}
 		return toRet;
 	}
 	
-	public List<SyncFile> getUnsynchronizedFiles(List<SyncFile> syncFiles) throws WrongTypeException, FileNotFoundException{
-		List<SyncFile> toRet = new ArrayList<SyncFile>();
-		for(SyncFile sf : this.getFiles()) {
+	public List<RemoteSyncFile> getUnsynchronizedFiles(List<RemoteSyncFile> syncFiles) throws WrongTypeException, FileNotFoundException, RemoteException{
+		List<RemoteSyncFile> toRet = new ArrayList<RemoteSyncFile>();
+		for(RemoteSyncFile sf : this.getFiles()) {
 			if(!syncFiles.contains(sf)) {
 				toRet.add(sf);
 			}
@@ -101,16 +107,16 @@ public class SyncFolder {
 		return toRet;
 	}
 	
-	public void synchronizeTo(SyncFolder sf) 
+	public void synchronizeTo(RemoteSyncFolder sf) 
 			throws WrongTypeException, TypeMismatchException, FileNotCreatedException, IOException 
 	{
-		for(SyncFile usf : sf.getUnsynchronizedFiles(this.getFiles())) {
+		for(RemoteSyncFile usf : sf.getUnsynchronizedFiles(this.getFiles())) {
 			new Copy(usf.getFile(),new File(this.getLocalpath() + usf.getPathFromSyncFolder()));
 		}
 	}
 	
 	public void synchronizeToPaired() throws WrongTypeException, TypeMismatchException, FileNotCreatedException, IOException {
-		for(SyncFolder sf : this.pairedFolders) {
+		for(RemoteSyncFolder sf : this.pairedFolders) {
 			this.synchronizeTo(sf);
 		}
 	}
@@ -125,7 +131,7 @@ public class SyncFolder {
 			
 			public void run() {
 				while(syncClockRunning) {
-					for(SyncFolder sf : localfolders) {
+					for(RemoteSyncFolder sf : localfolders) {
 						try {
 							sf.synchronizeToPaired();
 						} catch (WrongTypeException e) {
