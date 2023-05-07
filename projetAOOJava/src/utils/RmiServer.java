@@ -1,4 +1,4 @@
-package filesync;
+package utils;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -12,6 +12,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+
+import filesync.SyncFile;
+import filesync.SyncFolder;
 
 public class RmiServer {
 	

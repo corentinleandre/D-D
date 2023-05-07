@@ -9,15 +9,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import exceptions.FileSyncException;
+import filesync.GUI;
 import filesync.RemoteSyncFolder;
-import filesync.RmiServer;
 import filesync.SyncFolder;
+import utils.RmiServer;
 public class projetAOOJava {
 
 	public static void main(String[] args) {
 		try {
 			
 			RmiServer.initialize();
+			
+			GUI gui = new GUI();
 			
 			SyncFolder sf = new SyncFolder("..\\D-D Members");
 			System.out.println("Folder path : " + sf.getLocalpath());
@@ -64,7 +67,7 @@ public class projetAOOJava {
 			
 			
 			
-			/* SyncFolder.startSyncClock(30000);
+			 SyncFolder.startSyncClock(30000);
 			//Thread to stop after 5min
 			new Thread() {
 				public void run() {
@@ -77,7 +80,6 @@ public class projetAOOJava {
 					SyncFolder.stopSyncClock();
 				}
 			}.start();
-			*/
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
