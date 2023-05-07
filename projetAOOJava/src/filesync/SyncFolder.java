@@ -29,7 +29,6 @@ public class SyncFolder extends UnicastRemoteObject implements RemoteSyncFolder 
 
 	private String name = "";
 	private String localpath = "";
-	private SyncMode mode;
 	private Set<RemoteSyncFolder> pairedFolders = new HashSet<RemoteSyncFolder>();
 	
 	public SyncFolder(File file) throws RemoteException{
@@ -119,10 +118,6 @@ public class SyncFolder extends UnicastRemoteObject implements RemoteSyncFolder 
 		for(RemoteSyncFolder sf : this.pairedFolders) {
 			this.synchronizeTo(sf);
 		}
-	}
-
-	public SyncMode getMode() {
-		return mode;
 	}
 	
 	public static void startSyncClock(int millis) {

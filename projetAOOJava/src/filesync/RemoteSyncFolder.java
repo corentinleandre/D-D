@@ -21,6 +21,5 @@ public interface RemoteSyncFolder extends Remote {
 	public void synchronizeTo(RemoteSyncFolder sf) 
 			throws WrongTypeException, TypeMismatchException, FileNotCreatedException, IOException, RemoteException;
 	public void synchronizeToPaired() throws WrongTypeException, TypeMismatchException, FileNotCreatedException, IOException, RemoteException;
-	public SyncMode getMode() throws RemoteException;
 
 }
