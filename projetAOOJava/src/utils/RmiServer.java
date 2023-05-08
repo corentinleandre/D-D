@@ -1,17 +1,20 @@
 package utils;
 
 import java.io.File;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.ConnectException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 
 import filesync.SyncFile;
 import filesync.SyncFolder;
@@ -23,16 +26,25 @@ public class RmiServer {
 	@SuppressWarnings({ "removal" })
 	public static void initialize() throws RemoteException {
 		if(registry == null) {
-			registry = LocateRegistry.getRegistry(8080);
-			for(String s : registry.list()) {
-				try {
-					registry.unbind(s);
-				} catch (AccessException e) {
-					e.printStackTrace();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				} catch (NotBoundException e) {
-					e.printStackTrace();
+			try {
+				registry = LocateRegistry.createRegistry(8080);
+			} catch(ExportException e) {
+				registry = LocateRegistry.getRegistry(8080);
+			}
+			if(registry != null) {
+				for(String s : registry.list()) {
+					try {
+						registry.unbind(s);
+					} catch (AccessException e) {
+						System.out.println("a");
+						e.printStackTrace();
+					} catch (RemoteException e) {
+						System.out.println("b");
+						e.printStackTrace();
+					} catch (NotBoundException e) {
+						System.out.println("c");
+						e.printStackTrace();
+					}
 				}
 			}
 		}

@@ -31,14 +31,15 @@ public class SyncFolder extends UnicastRemoteObject implements RemoteSyncFolder 
 	private String localpath = "";
 	private Set<RemoteSyncFolder> pairedFolders = new HashSet<RemoteSyncFolder>();
 	
-	public SyncFolder(File file) throws RemoteException{
+	public SyncFolder(File file) throws RemoteException, FileNotFoundException{
+		if(!file.exists()) throw new FileNotFoundException("Cannot create SyncFolder as the referenced folder does not exist");
 		this.localpath = file.getAbsolutePath();
 		this.name = file.getName();
 		
 		localfolders.add(this);
 	}
 	
-	public SyncFolder(String path) throws RemoteException {
+	public SyncFolder(String path) throws RemoteException, FileNotFoundException {
 		this(new File(path));
 	}
 

@@ -20,14 +20,10 @@ public class projetAOOJava {
 			
 			RmiServer.initialize();
 			
-			GUI gui = new GUI();
+			
 			
 			SyncFolder sf = new SyncFolder("..\\D-D Members");
 			System.out.println("Folder path : " + sf.getLocalpath());
-			System.out.println("Folder name : " + sf.getName());
-			for(String s : sf.getAllSignatures()) {
-				System.out.println(s);
-			}
 			
 			try {
 				RmiServer.post(sf);
@@ -38,7 +34,6 @@ public class projetAOOJava {
 			
 			SyncFolder sf2 = new SyncFolder("..\\AHA");
 			System.out.println("Folder path : " + sf2.getLocalpath());
-			System.out.println("Folder name : " + sf2.getName());
 			for(String s : sf2.getAllSignatures()) {
 				System.out.println(s);
 			}
@@ -57,8 +52,6 @@ public class projetAOOJava {
 			} catch (NotBoundException e) {
 				e.printStackTrace();
 			}
-			
-			sf2.synchronizeToPaired();
 			
 			
 			
@@ -80,6 +73,8 @@ public class projetAOOJava {
 					SyncFolder.stopSyncClock();
 				}
 			}.start();
+			
+			GUI gui = new GUI();
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
